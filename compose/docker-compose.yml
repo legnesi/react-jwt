@@ -1,0 +1,48 @@
+version: '2'
+services:
+
+
+  # NGINX
+  nginx_proxy:
+    image: jwilder/nginx-proxy
+    container_name: "app_nginx"
+    ports:
+      - "30:30"
+      - "45:45"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  # FRONT
+  frontsrv:
+    image: auth-front
+    container_name: "app_front"
+    environment:
+      - VIRTUAL_HOST=front.local
+      - BACK_HOST=back.local
+    ports:
+      - "3000:3000"
+
+  # BACK
+  back:
+    image: backauth
+    container_name: "app_back"
+    environment:
+      - MONGO_HOST=mongo
+      - VIRTUAL_HOST=back.local
+      - VIRTUAL_PORT=4567
+    depends_on:
+      - mongo
+    ports:
+      - "4567:4567"
+
+  # MONGO
+  mongo:
+    image: mongo:3.3.6
+    container_name: "app_mongo"
+    ports:
+      - "27017:27017"
+      - "28017:28017"
+    volumes:
+      - ~/mongo_store/db/data:/data/db:rw
