@@ -38,8 +38,8 @@ services:
     environment:
       - VIRTUAL_HOST=localhost
       - BACK_HOST=localhost
-      - LETSENCRYPT_HOST=localhost
-      - LETSENCRYPT_EMAIL=legnesi@gmail.com
+      #- LETSENCRYPT_HOST=localhost
+      #- LETSENCRYPT_EMAIL=legnesi@gmail.com
     ports:
       - "3000:3000"
 
@@ -52,9 +52,9 @@ services:
     environment:
       - MONGO_HOST=mongo
       - VIRTUAL_HOST=localhost
-      - VIRTUAL_PORT=4567
-      - LETSENCRYPT_HOST=localhost
-      - LETSENCRYPT_EMAIL=legnesi@gmail.com
+      #- VIRTUAL_PORT=4567
+      #- LETSENCRYPT_HOST=localhost
+      #- LETSENCRYPT_EMAIL=legnesi@gmail.com
     depends_on:
       - mongo
     ports:
