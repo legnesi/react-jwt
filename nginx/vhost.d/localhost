@@ -1,0 +1,17 @@
+# FRONT
+location /frt/ {
+    proxy_pass http://app_front:3000/frt/;
+}
+
+location /css/ {
+    proxy_pass http://app_front:3000/css/;
+}
+
+location /js/ {
+    proxy_pass http://app_front:3000/js/;
+}
+
+# API REST
+location /api/ {
+    proxy_pass http://app_back:4567/api/;
+}
