@@ -1,22 +1,19 @@
-FROM java:8 
+###
+### BUILD LAYER
+##################################
+FROM maven:3.5-jdk-8 as MVN_BUILD
 
-# Install maven
-RUN apt-get update
-RUN apt-get install -y maven
+COPY src /usr/src/myapp/src
+COPY pom.xml /usr/src/myapp
 
-# Create app directory
-RUN mkdir -p /usr/src/app
+RUN mvn -f /usr/src/myapp/pom.xml clean package
 
-WORKDIR /usr/src/app
+###
+### REAL APP DEPLOY LAYER
+#############################
+FROM java:8
 
-# Prepare by downloading dependencies
-COPY pom.xml /usr/src/app/pom.xml
-RUN ["mvn", "dependency:resolve"]
-RUN ["mvn", "verify"]
-
-# Adding source, compile and package into a fat jar
-COPY src /usr/src/app/src
-RUN ["mvn", "package"]
+COPY --from=MVN_BUILD /usr/src/myapp/target/backauth-jar-with-dependencies.jar /backauth.jar
 
 EXPOSE 4567
-CMD ["/usr/lib/jvm/java-8-openjdk-amd64/bin/java", "-jar", "target/backauth-jar-with-dependencies.jar"]
+CMD ["java", "-jar", "/backauth.jar"]

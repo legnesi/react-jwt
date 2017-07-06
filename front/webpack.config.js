@@ -1,3 +1,4 @@
+//const WebpackShellPlugin = require('webpack-shell-plugin');
 const path = require('path');
 var webpack = require('webpack');
 module.exports = {
@@ -26,8 +27,13 @@ module.exports = {
     plugins: [
         //Ici Webpack charge la variable d'env BACK_HOST et la rend disponible dans toute l'application
         new webpack.EnvironmentPlugin(['BACK_HOST'])
+        //Permet de lancer des scripts shell avant et après le build webpack
+        /**new WebpackShellPlugin({
+            onBuildStart:['echo "*** Build Webpack ***"'], 
+            onBuildEnd:['echo "*** Fin du build webpack ***"']
+        })*/
     ],
 
-    // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
-    watch: true
+    // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes. In dev mode set true
+    watch: false
 };

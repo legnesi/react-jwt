@@ -5,56 +5,34 @@ services:
   # NGINX
   nginx_proxy:
     image: jwilder/nginx-proxy
-    restart: always
     container_name: "app_nginx"
     ports:
-      - "30:30"
-      - "45:45"
+      #- "30:30"
+      #- "45:45"
       - "80:80"
-      - "443:443"
+      #- "443:443"
     volumes:
-     # - ~/docker-letsencrypt-certs:/etc/nginx/certs:ro
-     # - /etc/nginx/vhost.d
-     # - /usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
-
-  #LETSENCRYPT
-  #nginx-proxy-companion:
-  #  image: jrcs/letsencrypt-nginx-proxy-companion
-  #  restart: always
-  #  container_name: letsencrypt_nginx
-  #  volumes:
-  #    - ~/docker-letsencrypt-certs:/etc/nginx/certs:rw
-  #    - /var/run/docker.sock:/var/run/docker.sock
-  #  volumes_from:
-  #    - nginx_proxy
+      - ./nginx/vhost.d:/etc/nginx/vhost.d:ro
 
   # FRONT
   frontsrv:
-    image:
-      build: ./front
+    image: auth-front
     container_name: "app_front"
-    restart: always
     environment:
       - VIRTUAL_HOST=localhost
       - BACK_HOST=localhost
-      #- LETSENCRYPT_HOST=localhost
-      #- LETSENCRYPT_EMAIL=legnesi@gmail.com
     ports:
       - "3000:3000"
 
   # BACK
   back:
-    image:
-      build: ./back
+    image: back-auth
     container_name: "app_back"
-    restart: always
     environment:
       - MONGO_HOST=mongo
       - VIRTUAL_HOST=localhost
-      #- VIRTUAL_PORT=4567
-      #- LETSENCRYPT_HOST=localhost
-      #- LETSENCRYPT_EMAIL=legnesi@gmail.com
+      - VIRTUAL_PORT=4567
     depends_on:
       - mongo
     ports:
