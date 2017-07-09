@@ -47,3 +47,17 @@ services:
       - "28017:28017"
     volumes:
       - ~/mongo_store/db/data:/data/db:rw
+
+  # DUMP
+  mongo_backup:
+    image: mongodump
+    container_name: "dump_mongo"
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - CRON_SCHEDULE=* * * * *
+      - DB_NAME=react_app
+    volumes:
+      - ~/mongo-dump-test:/mongodb-backup:rw
+    depends_on:
+      - mongo
